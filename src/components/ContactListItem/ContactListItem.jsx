@@ -1,27 +1,21 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Notify } from 'notiflix';
 import css from './ContactListItem.module.css';
-import { deleteContact } from 'redux/conttacts/contactsSlice';
+import { contactDelete } from 'redux/conttacts/contactsSlice';
+import { selectVisibleContacts } from 'redux/conttacts/contactsSelector';
 
 export const ContactListItem = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts);
-  const filter = useSelector(state => state.contacts.filter);
-
-  const getFormFilter = () => {
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
+  const filter = useSelector(selectVisibleContacts);
 
   const handleRemoveContact = id => {
-    dispatch(deleteContact(id));
+    dispatch(contactDelete(id));
     Notify.success('The contact was deleted');
   };
 
   return (
     <ul>
-      {getFormFilter().map(contact => {
+      {filter.map(contact => {
         const { id, name, number } = contact;
         return (
           <li className={css.listItem} key={id}>
